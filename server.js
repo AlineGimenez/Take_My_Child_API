@@ -8,7 +8,7 @@ const database = require('./database');
 server.use(cors())
 server.use(express.json())
 
-server.get('/login', async function(request, response) {
+server.post('/login', async function(request, response) {
     const login = request.body.login;
     const password = request.body.password;
     const resposta = await database.login(login, password);
@@ -18,9 +18,7 @@ server.get('/login', async function(request, response) {
     }
     else{
         response.json("SENHA ERRADA");
-        response.status(400).send();
     }
-    
 })
 
 server.get('/', async function(request, response) {
