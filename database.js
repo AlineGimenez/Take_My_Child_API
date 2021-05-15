@@ -29,7 +29,12 @@ module.exports = {
         const sql = `SELECT usuario_tipo FROM usuario WHERE usuario_login = $1 and usuario_password = $2`;
         const result = await pool.query(sql, [login, senha]);
         //print(result);
-        return result.rows;
+        if (result.rows[0]!= null){
+            return result.rows[0].usuario_tipo;
+        }
+        else{
+            return result.rows[0];
+        }
     },
 
     async createUsuario(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) {

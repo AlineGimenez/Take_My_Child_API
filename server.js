@@ -12,12 +12,13 @@ server.post('/login', async function(request, response) {
     const login = request.body.login;
     const password = request.body.password;
     const resposta = await database.login(login, password);
-    if(resposta != ""){
-        response.json(resposta);
+    if(resposta != null){
+        response.send(resposta);
         response.status(200).send();
     }
     else{
-        response.json("SENHA ERRADA");
+        response.send("SENHA ERRADA");
+        response.status(400).send();
     }
 })
 
@@ -27,7 +28,7 @@ server.get('/', async function(request, response) {
 })
 
 server.post('/cadastrousuario', async function(request, response) {
-    const uuid = '4';
+    const uuid = '5';
     const nome_usuario = request.body.nome;
     const cpf = request.body.cpf;
     const rg = request.body.rg;
