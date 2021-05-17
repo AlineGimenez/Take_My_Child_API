@@ -28,7 +28,7 @@ server.get('/', async function(request, response) {
 })
 
 server.post('/cadastrousuario', async function(request, response) {
-    const uuid = '5';
+    const uuid1 = uuid();
     const nome_usuario = request.body.nome;
     const cpf = request.body.cpf;
     const rg = request.body.rg;
@@ -37,7 +37,7 @@ server.post('/cadastrousuario', async function(request, response) {
     const usuario_password = request.body.password;
     const tipo_usuario = request.body.tipo;
 
-    const result = await database.createUsuario(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, tipo_usuario);
+    const result = await database.createUsuario(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, tipo_usuario);
     response.status(200).send();
 })
 
