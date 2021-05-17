@@ -54,4 +54,35 @@ module.exports = {
         const result = await pool.query(sql);
         return result.rows;
     },
+
+    async verificarLogin(login) {
+        const sql = `SELECT uuid FROM usuario WHERE usuario_login = $1`;
+        const result = await pool.query(sql, [login]);
+        //print(result);
+        if (result.rows[0]!= null){
+            return result.rows[0].uuid;
+        }
+        else{
+            return result.rows[0];
+        }
+    },
+
+    async createMotorista(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, cnh, placa_van, modelo_van, cor_van, marca_van) {
+        try {
+            const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING usuario_login`;
+            const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo]);
+            
+            if(result1!=null)
+            {
+                const sql2 = `INSERT INTO motorista (usuario_codigo, cnh, placa_van, modelo_van, cor_van, marca_van) VALUES ($1, $2, $3, $4, $5, $6)`;
+                const result2 = await pool.query(sql2, [uuid, cnh, placa_van, modelo_van, cor_van, marca_van]);
+                return result1.rows[0].usuario_login
+            }
+            return result1.rows;
+
+        }catch(error) {
+            console.log(error);
+            return -1;
+        }
+    },
 }
