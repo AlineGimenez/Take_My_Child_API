@@ -85,4 +85,23 @@ module.exports = {
             return -1;
         }
     },
+
+    async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola ) {
+        try {
+            const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING usuario_login`;
+            const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo]);
+            
+            if(result1!=null)
+            {
+                const sql2 = `INSERT INTO aluno (usuario_codigo, nome_aluno , endereco , trajeto , escola , endereco_escola) VALUES ($1, $2, $3, $4, $5, $6)`;
+                const result2 = await pool.query(sql2, [uuid, nome_aluno , endereco , trajeto , escola , endereco_escola]);
+                return result1.rows[0].usuario_login
+            }
+            return result1.rows;
+
+        }catch(error) {
+            console.log(error);
+            return -1;
+        }
+    },
 }

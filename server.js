@@ -64,6 +64,7 @@ server.post('/cadastrarmotorista', async function(request, response) {
     const usuario_login = request.body.login;
     const usuario_senha = request.body.senha;
     const usuario_tipo = "motorista";
+
     const cnh = request.body.cnh;
     const placa_van = request.body.placa_van;
     const modelo_van = request.body.modelo_van;
@@ -71,6 +72,27 @@ server.post('/cadastrarmotorista', async function(request, response) {
     const marca_van = request.body.marca_van;
 
     const result = await database.createMotorista(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, cnh, placa_van, modelo_van, cor_van, marca_van);
+    response.send(result);
+    response.status(200).send();
+})
+
+server.post('/cadastrarresponsaveis', async function(request, response) {
+    const uuid1 = uuid();
+    const nome_usuario = request.body.nome;
+    const cpf = request.body.cpf;
+    const rg = request.body.rg;
+    const telefone = request.body.telefone;
+    const usuario_login = request.body.login;
+    const usuario_senha = request.body.senha;
+    const usuario_tipo = "responsave";
+    
+    const nome_aluno = request.body.nome_aluno;
+    const endereco = request.body.endereco;
+    const trajeto = request.body.trajeto;
+    const escola = request.body.escola;
+    const endereco_escola = request.body.endereco_escola;
+
+    const result = await database.createMotorista(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola);
     response.send(result);
     response.status(200).send();
 })
