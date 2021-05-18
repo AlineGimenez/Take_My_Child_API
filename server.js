@@ -50,7 +50,7 @@ server.get('/verificarlogin/:login', async function(request, response) {
         response.status(200).send();
     }
     else{
-        response.send(resposta);
+        response.send(null);
         response.status(400).send();
     }
 })
