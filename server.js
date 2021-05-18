@@ -92,7 +92,7 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
     const escola = request.body.escola;
     const endereco_escola = request.body.endereco_escola;
 
-    const result = await database.createMotorista(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola);
+    const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola);
     response.send(result);
     response.status(200).send();
 })
