@@ -57,12 +57,12 @@ server.get('/verificarlogin/:login', async function(request, response) {
 
 server.post('/cadastrarmotorista', async function(request, response) {
     const uuid1 = uuid();
-    const nome_usuario = request.body.nome;
-    const cpf = request.body.cpf;
-    const rg = request.body.rg;
-    const telefone = request.body.telefone;
-    const usuario_login = request.body.login;
-    const usuario_senha = request.body.senha;
+    const nome_usuario = request.body.user.nome;
+    const cpf = request.body.user.cpf;
+    const rg = request.body.user.rg;
+    const telefone = request.body.user.telefone;
+    const usuario_login = request.body.user.login;
+    const usuario_senha = request.body.user.senha;
     const usuario_tipo = "motorista";
 
     const cnh = request.body.cnh;
@@ -78,12 +78,12 @@ server.post('/cadastrarmotorista', async function(request, response) {
 
 server.post('/cadastrarresponsaveis', async function(request, response) {
     const uuid1 = uuid();
-    const nome_usuario = request.body.nome;
-    const cpf = request.body.cpf;
-    const rg = request.body.rg;
-    const telefone = request.body.telefone;
-    const usuario_login = request.body.login;
-    const usuario_senha = request.body.senha;
+    const nome_usuario = request.body.user.nome;
+    const cpf = request.body.user.cpf;
+    const rg = request.body.user.rg;
+    const telefone = request.body.user.telefone;
+    const usuario_login = request.body.user.login;
+    const usuario_senha = request.body.user.senha;
     const usuario_tipo = "responsave";
     
     const nome_aluno = request.body.nome_aluno;
