@@ -78,7 +78,7 @@ server.post('/cadastrarmotorista', async function(request, response) {
 
 server.get('/readmotorista/:login', async function(request, response) {
     const login1 = request.params.login;
-    const resultado = await database.readmotorista(login1);
+    const resultado = await database.readMotorista(login1);
     response.json(resultado);
 })
 
@@ -98,8 +98,14 @@ server.put('/updatemotorista/:uuid', async function(request, response) {
     const marca_van = request.body.marca_van;
 
     const result = await database.updateMotorista(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van);
-    const resultado = await database.readmotorista(usuario_login);
+    const resultado = await database.readMotorista(usuario_login);
     response.json(resultado);
+})
+
+server.delete('/deletemotorista/:uuid', async function(request, response) {
+    const uuid1= request.params.uuid;
+    const resultado = await database.deleteMotorista(uuid1);
+    response.status(200).send();
 })
 
 server.post('/cadastrarresponsaveis', async function(request, response) {
@@ -120,6 +126,38 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
 
     const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola);
     response.send(result);
+    response.status(200).send();
+})
+
+server.get('/readaluno/:login', async function(request, response) {
+    const login1 = request.params.login;
+    const resultado = await database.readAluno(login1);
+    response.json(resultado);
+})
+
+server.put('/updatealuno/:uuid', async function(request, response) {
+    const uuid1 = request.params.uuid;
+    const nome_usuario = request.body.nome;
+    const cpf = request.body.cpf;
+    const rg = request.body.rg;
+    const telefone = request.body.telefone;
+    const usuario_login = request.body.login;
+    const usuario_senha = request.body.senha;
+
+    const nome_aluno = request.body.nome_aluno;
+    const endereco = request.body.endereco;
+    const trajeto = request.body.trajeto;
+    const escola = request.body.escola;
+    const endereco_escola = request.body.endereco_escola;
+
+    const result = await database.updateAluno(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola);
+    const resultado = await database.readAluno(usuario_login);
+    response.json(resultado);
+})
+
+server.delete('/deletealuno/:uuid', async function(request, response) {
+    const uuid1= request.params.uuid;
+    const resultado = await database.deleteAluno(uuid1);
     response.status(200).send();
 })
 

@@ -86,6 +86,12 @@ module.exports = {
         }
     },
 
+    async readMotorista(login) {
+        const sql = `select * from usuario u, motorista m where u.usuario_login = $1 and u.uuid = m.usuario_codigo`;
+        const result = await pool.query(sql, [login]);
+        return result.rows;
+    },
+
     async updateMotorista(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van) {
         const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
         const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
@@ -98,9 +104,13 @@ module.exports = {
         return result1;
     },
 
-    async readmotorista(login) {
-        const sql = `select * from usuario u, motorista m where u.usuario_login = $1 and u.uuid = m.usuario_codigo`;
-        const result = await pool.query(sql, [login]);
+    async deleteMotorista(uuid) {
+        sql = `UPDATE aluno SET codigo_motorista = null WHERE usuario_codigo = $1`;
+        result = await pool.query(sql, [uuid]);
+        sql = `delete from motorista where usuario_codigo = $1`;
+        result = await pool.query(sql, [uuid]);
+        sql = `delete from usuario where uuid = $1`;
+        result = await pool.query(sql, [uuid]);
         return result.rows;
     },
 
@@ -121,5 +131,31 @@ module.exports = {
             console.log(error);
             return -1;
         }
+    },
+
+    async readAluno(login) {
+        const sql = `select * from usuario u, aluno a where u.usuario_login = $1 and u.uuid = a.usuario_codigo`;
+        const result = await pool.query(sql, [login]);
+        return result.rows;
+    },
+
+    async updateAluno(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola) {
+        const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
+        const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
+            
+        if(result1!=null)
+        {
+            const sql2 = `UPDATE aluno SET nome_aluno=$2, endereco=$3, trajeto=$4, escola=$5, endereco_escola=$6 where usuario_codigo = $1`;
+            const result2 = await pool.query(sql2, [uuid, nome_aluno, endereco, trajeto, escola, endereco_escola]);
+        }
+        return result1;
+    },
+
+    async deleteAluno(uuid) {
+        sql = `delete from aluno where usuario_codigo = $1`;
+        result = await pool.query(sql, [uuid]);
+        sql = `delete from usuario where uuid = $1`;
+        result = await pool.query(sql, [uuid]);
+        return result.rows;
     },
 }
