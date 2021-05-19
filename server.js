@@ -76,6 +76,32 @@ server.post('/cadastrarmotorista', async function(request, response) {
     response.status(200).send();
 })
 
+server.get('/readmotorista/:login', async function(request, response) {
+    const login1 = request.params.login;
+    const resultado = await database.readmotorista(login1);
+    response.json(resultado);
+})
+
+server.put('/updatemotorista/:uuid', async function(request, response) {
+    const uuid1 = request.params.uuid;
+    const nome_usuario = request.body.nome;
+    const cpf = request.body.cpf;
+    const rg = request.body.rg;
+    const telefone = request.body.telefone;
+    const usuario_login = request.body.login;
+    const usuario_senha = request.body.senha;
+
+    const cnh = request.body.cnh;
+    const placa_van = request.body.placa_van;
+    const modelo_van = request.body.modelo_van;
+    const cor_van = request.body.cor_van;
+    const marca_van = request.body.marca_van;
+
+    const result = await database.updateMotorista(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van);
+    const resultado = await database.readmotorista(usuario_login);
+    response.json(resultado);
+})
+
 server.post('/cadastrarresponsaveis', async function(request, response) {
     const uuid1 = uuid();
     const nome_usuario = request.body.user.nome;
@@ -97,11 +123,5 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
     response.status(200).send();
 })
 
-
-
-
-/*server.get('/', function(request, response) {
-    response.send('Hello World!');
-})*/
 
 server.listen(process.env.PORT || 3000);

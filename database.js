@@ -86,6 +86,24 @@ module.exports = {
         }
     },
 
+    async updateMotorista(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van) {
+        const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
+        const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
+            
+        if(result1!=null)
+        {
+            const sql2 = `UPDATE motorista SET cnh=$2, placa_van=$3, modelo_van=$4, cor_van=$5, marca_van=$6 where usuario_codigo = $1`;
+            const result2 = await pool.query(sql2, [uuid, cnh, placa_van, modelo_van, cor_van, marca_van]);
+        }
+        return result1;
+    },
+
+    async readmotorista(login) {
+        const sql = `select * from usuario u, motorista m where u.usuario_login = $1 and u.uuid = m.usuario_codigo`;
+        const result = await pool.query(sql, [login]);
+        return result.rows;
+    },
+
     async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola ) {
         try {
             const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING usuario_login`;
