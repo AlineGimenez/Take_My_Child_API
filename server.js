@@ -47,10 +47,8 @@ server.get('/verificarlogin/:login', async function(request, response) {
     const resposta = await database.verificarLogin(login);
     if(resposta != null){
         response.send("Já existe este login!");
-        response.status(200).send();
     }
     else{
-        response.send(null);
         response.status(401).send();
     }
 })
@@ -113,15 +111,10 @@ server.put('/updatecodmotorista', async function(request, response) {
     const login_motorista = request.body.login_motorista;
 
     const result = await database.linkMotorista(uuid_aluno,login_motorista);
-
-    if(result != null){
+    if(result != null)
         response.json(result);
-        response.status(200).send();
-    }
-    else{
-        response.send(null);
+    else
         response.status(401).send();
-    }
 })
 
 server.post('/cadastrarresponsaveis', async function(request, response) {
