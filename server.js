@@ -161,5 +161,11 @@ server.delete('/deletealuno/:uuid', async function(request, response) {
     response.status(200).send();
 })
 
+server.get('/listagemalunos/:login', async function(request, response) {
+    const login1 = request.params.login;
+    const resultado = await database.listAlunos(login1);
+    response.json(resultado);
+})
+
 
 server.listen(process.env.PORT || 3000);
