@@ -161,9 +161,9 @@ module.exports = {
 
     async listAlunos(loginmotorista) {
         uuid_motorista[0].uuid = readMotorista(loginmotorista);
-        const sql = `select * from aluno a INNER JOIN motorista m on m.usuario_codigo = $1`;
+        const sql = `select * from usuario u INNER JOIN aluno a on a.usuario_codigo = u.uuid INNER JOIN motorista m on m.usuario_codigo = $1`;
         const result = await pool.query(sql, [uuid_motorista]);
         return result.rows;
     },
-    
+
 }
