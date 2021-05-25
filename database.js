@@ -113,6 +113,15 @@ module.exports = {
         result = await pool.query(sql, [uuid]);
         return result.rows;
     },
+    
+    async linkMotorista(uuid_aluno, login_motorista) {
+        const sql1 = `UPDATE aluno SET codigo_motorista = (SELECT u.uuid FROM usuario u WHERE u.usuario_login = $1 AND u.usuario_tipo = 'motorista') WHERE usuario_codigo = $2 RETURNING codigo_motorista`;
+        const result1 = await pool.query(sql1, [login_motorista, uuid_aluno]);
+        /*const sql2 = `SELECT codigo_motorista FROM aluno WHERE usuario_codigo = $1`;
+        const result2 = await pool.query(sql2, [uuid_aluno]);*/
+
+        return result1.rows[0];
+    },
 
     async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola ) {
         try {

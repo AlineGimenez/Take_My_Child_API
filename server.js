@@ -51,7 +51,7 @@ server.get('/verificarlogin/:login', async function(request, response) {
     }
     else{
         response.send(null);
-        response.status(400).send();
+        response.status(401).send();
     }
 })
 
@@ -108,6 +108,22 @@ server.delete('/deletemotorista/:uuid', async function(request, response) {
     response.status(200).send();
 })
 
+server.put('/updatecodmotorista', async function(request, response) {
+    const uuid_aluno = request.body.uuid_aluno;
+    const login_motorista = request.body.login_motorista;
+
+    const result = await database.linkMotorista(uuid_aluno,login_motorista);
+
+    if(result != null){
+        response.json(result);
+        response.status(200).send();
+    }
+    else{
+        response.send(null);
+        response.status(401).send();
+    }
+})
+
 server.post('/cadastrarresponsaveis', async function(request, response) {
     const uuid1 = uuid();
     const nome_usuario = request.body.user.nome;
@@ -137,13 +153,13 @@ server.get('/readaluno/:login', async function(request, response) {
 
 server.put('/updatealuno/:uuid', async function(request, response) {
     const uuid1 = request.params.uuid;
-    const nome_usuario = request.body.nome;
-    const cpf = request.body.cpf;
-    const rg = request.body.rg;
-    const telefone = request.body.telefone;
-    const usuario_login = request.body.login;
-    const usuario_senha = request.body.senha;
-
+    const nome_usuario = request.body.user.nome;
+    const cpf = request.body.user.cpf;
+    const rg = request.body.user.rg;
+    const telefone = request.body.user.telefone;
+    const usuario_login = request.body.user.login;
+    const usuario_senha = request.body.user.senha;
+    
     const nome_aluno = request.body.nome_aluno;
     const endereco = request.body.endereco;
     const trajeto = request.body.trajeto;
