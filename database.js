@@ -158,4 +158,18 @@ module.exports = {
         result = await pool.query(sql, [uuid]);
         return result.rows;
     },
+
+/*    
+
+SELECT * FROM TB_ContratoCotista
+INNER JOIN TB_Contrato ON TB_Contrato.id_contrato = TB_ContratoCotista.id_contrato
+INNER JOIN TB_Cotista ON TB_Cotista = TB_ContratoCotista.id_cotista
+
+*/
+    async listAlunos(loginmotorista) {
+        uuid_motorista[0].uuid = readMotorista(loginmotorista);
+        const sql = `select * from aluno a INNER JOIN motorista m on m.usuario_codigo = $1`;
+        const result = await pool.query(sql, [uuid_motorista]);
+        return result.rows;
+    },
 }
