@@ -84,12 +84,12 @@ server.get('/readmotorista/:login', async function(request, response) {
 
 server.put('/updatemotorista/:uuid', async function(request, response) {
     const uuid1 = request.params.uuid;
-    const nome_usuario = request.body.nome;
-    const cpf = request.body.cpf;
-    const rg = request.body.rg;
-    const telefone = request.body.telefone;
-    const usuario_login = request.body.login;
-    const usuario_senha = request.body.senha;
+    const nome_usuario = request.body.user.nome;
+    const cpf = request.body.user.cpf;
+    const rg = request.body.user.rg;
+    const telefone = request.body.user.telefone;
+    const usuario_login = request.body.user.login;
+    const usuario_senha = request.body.user.senha;
 
     const cnh = request.body.cnh;
     const placa_van = request.body.placa_van;
