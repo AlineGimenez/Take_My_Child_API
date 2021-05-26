@@ -105,7 +105,7 @@ module.exports = {
     },
 
     async deleteMotorista(uuid) {
-        sql = `UPDATE aluno SET codigo_motorista = null WHERE usuario_codigo = $1`;
+        sql = `UPDATE aluno SET codigo_motorista = null WHERE codigo_motorista = $1`;
         result = await pool.query(sql, [uuid]);
         sql = `delete from motorista where usuario_codigo = $1`;
         result = await pool.query(sql, [uuid]);
