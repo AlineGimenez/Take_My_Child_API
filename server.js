@@ -80,6 +80,12 @@ server.get('/readmotorista/:login', async function(request, response) {
     response.json(resultado);
 })
 
+server.get('/readmotoristauuid/:uuid', async function(request, response) {
+    const uuid1 = request.params.uuid;
+    const resultado = await database.readMotoristaUUID(uuid1);
+    response.json(resultado);
+})
+
 server.put('/updatemotorista/:uuid', async function(request, response) {
     const uuid1 = request.params.uuid;
     const nome_usuario = request.body.user.nome;

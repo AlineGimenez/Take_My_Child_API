@@ -92,6 +92,12 @@ module.exports = {
         return result.rows;
     },
 
+    async readMotoristaUUID(uuid) {
+        const sql = `select * from usuario where uuid = $1 and usuario_tipo = 'motorista'`;
+        const result = await pool.query(sql, [uuid]);
+        return result.rows;
+    },
+
     async updateMotorista(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van) {
         const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
         const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
