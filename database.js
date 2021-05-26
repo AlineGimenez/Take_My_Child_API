@@ -166,8 +166,10 @@ module.exports = {
     },
 
     async listAlunos(loginmotorista) {
-        uuid_motorista[0].uuid = readMotorista(loginmotorista);
-        const sql = `select * from usuario u INNER JOIN aluno a on a.usuario_codigo = u.uuid INNER JOIN motorista m on m.usuario_codigo = $1`;
+        uuid_motorista = await this.readMotorista(loginmotorista);
+        console.log(uuid_motorista);
+        uuid_motorista = uuid_motorista[0].uuid;
+        const sql = `select u.nome_usuario,a.nome_aluno,u.telefone,a.endereco,a.endereco_escola, a.escola  from usuario u INNER JOIN aluno a on a.usuario_codigo = u.uuid INNER JOIN motorista m on m.usuario_codigo = $1 where m.usuario_codigo = a.codigo_motorista`;
         const result = await pool.query(sql, [uuid_motorista]);
         return result.rows;
     },
