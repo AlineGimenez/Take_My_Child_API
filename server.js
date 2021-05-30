@@ -110,21 +110,30 @@ server.put('/updatecodmotorista', async function(request, response) {
     const uuid_aluno = request.body.uuid_aluno;
     const login_motorista = request.body.login_motorista;
 
-    result1;
+    console.log(login_motorista);
 
-    if(login_motorista != null){
+    result1 = null;
+
+    if(login_motorista != ""){
         const resultado = await database.readMotorista(login_motorista);
 
         console.log(resultado);
 
-        if(resultado != null)
-        result1 = await database.linkMotorista(uuid_aluno,login_motorista);
+        if(resultado != ""){
+            console.log("PASSOU if");
+            result1 = await database.linkMotorista(uuid_aluno,login_motorista);
+        }
+        else{
+            result1 = null;
+        }
+       
     }
     else{
+        console.log("PASSOU else");
         result1 = await database.linkMotorista(uuid_aluno,login_motorista);
     }
     
-    if(result1 != null && resultado != null){
+    if(result1 != null){
         response.json(result1);
     }
     else
