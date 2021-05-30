@@ -106,12 +106,6 @@ server.put('/updatemotorista/:uuid', async function(request, response) {
     response.json(resultado);
 })
 
-server.delete('/deletemotorista/:uuid', async function(request, response) {
-    const uuid1= request.params.uuid;
-    const resultado = await database.deleteMotorista(uuid1);
-    response.status(200).send();
-})
-
 server.put('/updatecodmotorista', async function(request, response) {
     const uuid_aluno = request.body.uuid_aluno;
     const login_motorista = request.body.login_motorista;
@@ -121,6 +115,12 @@ server.put('/updatecodmotorista', async function(request, response) {
         response.json(result);
     else
         response.status(401).send();
+})
+
+server.delete('/deletemotorista/:uuid', async function(request, response) {
+    const uuid1= request.params.uuid;
+    const resultado = await database.deleteMotorista(uuid1);
+    response.status(200).send();
 })
 
 server.post('/cadastrarresponsaveis', async function(request, response) {
@@ -182,5 +182,29 @@ server.get('/listagemalunos/:login', async function(request, response) {
     response.json(resultado);
 })
 
+server.post('/createausente', async function(request, response) {
+    const uuid1 = uuid();
+    const aluno_codigo = request.body.aluno_codigo;
+    const turno_ida = request.body.turno_ida;
+    const turno_volta = request.body.turno_volta;
+    const data = request.body.data;
+
+    const result = await database.createAusente(uuid1, aluno_codigo, turno_ida, turno_volta, data);
+    response.send(result);
+    response.status(200).send();
+})
+
+server.get('/readausente/', async function(request, response) {
+    const resultado = await database.readAusente();
+    response.json(resultado);
+})
+
+server.put('/readausentelogin/:login', async function(request, response) {
+    const login = request.params.login;
+    const data = request.body.data;
+    console.log(data);
+    const resultado = await database.readAusenteLogin(login,data);
+    response.json(resultado);
+})
 
 server.listen(process.env.PORT || 3000);

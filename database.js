@@ -15,6 +15,7 @@ const pool = new Pool({
 //const script = 'CREATE TABLE IF NOT EXISTS ausente (uuid char(36) not null, aluno_codigo char(36) not null, turno_ida int not null, turno_volta int not null, constraint ausente_pk primary key(uuid), constraint ausente_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint ausente_valida_turno_ida check(turno_ida in (0,1)), constraint ausente_valida_turno_volta check(turno_volta in (0,1)))';
 //const script = 'CREATE TABLE IF NOT EXISTS turno (uuid char(36) not null, aluno_codigo char(36) not null, motorista_codigo char(36) not null, turno varchar(20) not null, status_turno int not null, constraint turno_pk primary key(uuid), constraint turno_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint turno_fk_motorista_cod foreign key(motorista_codigo) references motorista, constraint turno_valida_status check(status_turno in (0,1,2,3)))';
 //const script = 'DELETE FROM usuario WHERE uuid = $1';
+//const script = 'ALTER TABLE ausente ADD data date not null';
 
 /*pool.query(script, function (error, result) {
     if (error)
@@ -177,6 +178,31 @@ module.exports = {
         uuid_motorista = uuid_motorista[0].uuid;
         const sql = `select u.nome_usuario,a.nome_aluno,u.telefone,a.endereco,a.endereco_escola, a.escola  from usuario u INNER JOIN aluno a on a.usuario_codigo = u.uuid INNER JOIN motorista m on m.usuario_codigo = $1 where m.usuario_codigo = a.codigo_motorista`;
         const result = await pool.query(sql, [uuid_motorista]);
+        return result.rows;
+    },
+
+    async createAusente(uuid, aluno_codigo, turno_ida, turno_volta, data) {
+        try {
+            const sql1 = `INSERT INTO ausente (uuid, aluno_codigo, turno_ida, turno_volta, data) VALUES ($1, $2, $3, $4, $5) RETURNING aluno_codigo`;
+            const result1 = await pool.query(sql1, [uuid, aluno_codigo, turno_ida, turno_volta, data]);
+            
+            return result1.rows[0];
+
+        }catch(error) {
+            console.log(error);
+            return -1;
+        }
+    },
+
+    async readAusente() {
+        const sql = `select uuid, aluno_codigo, turno_ida, turno_volta, to_char(data, 'dd-mm-yyyy') as data from ausente`;
+        const result = await pool.query(sql);
+        return result.rows;
+    },
+
+    async readAusenteLogin(login, data) {
+        const sql = `select * from ausente where aluno_codigo = $1 and data::date = $2`;
+        const result = await pool.query(sql, [login, data]);
         return result.rows;
     },
 
