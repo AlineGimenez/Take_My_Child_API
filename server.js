@@ -154,6 +154,7 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
     const telefone = request.body.user.telefone;
     const usuario_login = request.body.user.login;
     const usuario_senha = request.body.user.senha;
+    const email = request.body.user.email;
     const usuario_tipo = "responsave";
     
     const nome_aluno = request.body.nome_aluno;
@@ -162,7 +163,7 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
     const escola = request.body.escola;
     const endereco_escola = request.body.endereco_escola;
 
-    const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola);
+    const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola, email);
     response.send(result);
     response.status(200).send();
 })
@@ -179,6 +180,7 @@ server.put('/updatealuno/:uuid', async function(request, response) {
     const cpf = request.body.user.cpf;
     const rg = request.body.user.rg;
     const telefone = request.body.user.telefone;
+    const email = request.body.user.email;
     const usuario_login = request.body.user.login;
     const usuario_senha = request.body.user.senha;
     
@@ -188,7 +190,7 @@ server.put('/updatealuno/:uuid', async function(request, response) {
     const escola = request.body.escola;
     const endereco_escola = request.body.endereco_escola;
 
-    const result = await database.updateAluno(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola);
+    const result = await database.updateAluno(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola, email);
     const resultado = await database.readAluno(usuario_login);
     response.json(resultado);
 })

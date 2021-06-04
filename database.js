@@ -9,20 +9,21 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-//const script = 'CREATE TABLE IF NOT EXISTS usuario (uuid char(36) not null,	nome_usuario varchar(50) not null, cpf char(11) not null, rg char(9) not null, telefone char(11) not null, usuario_login varchar(25) not null, usuario_password varchar(20) not null, usuario_tipo char(10), constraint user_pk_uuid primary key(uuid),	constraint user_login_uk unique(usuario_login))';
+//const script = 'CREATE TABLE IF NOT EXISTS usuario (uuid char(36) not null,	nome_usuario varchar(50) not null, cpf char(11) not null, rg char(9) not null, telefone char(11) not null, usuario_login varchar(25) not null, usuario_password varchar(20) not null, usuario_tipo char(10), email varchar(50) constraint user_pk_uuid primary key(uuid),	constraint user_login_uk unique(usuario_login))';
 //const script = 'CREATE TABLE IF NOT EXISTS motorista (usuario_codigo char(36) not null,	cnh char(11) not null, placa_van char(7) not null, modelo_van varchar(20) not null,	cor_van varchar(20) not null, marca_van varchar(20) not null, constraint moto_pk_usuario_cod primary key(usuario_codigo), constraint moto_fk_usuario_cod foreign key(usuario_codigo) references usuario, constraint moto_cnh_uk unique(cnh), constraint moto_placa_van_uk unique(placa_van))';
 //const script = 'CREATE TABLE IF NOT EXISTS aluno (usuario_codigo char(36) not null,	nome_aluno varchar(50) not null, endereco varchar(50) not null,	trajeto int not null, escola varchar(20) not null, endereco_escola varchar(50) not null, codigo_motorista char(36),	constraint aluno_pk_usuario_cod primary key(usuario_codigo), constraint aluno_fk_usuario_cod foreign key(usuario_codigo) references usuario, constraint aluno_fk_motorista_cod foreign key(codigo_motorista) references motorista, constraint aluno_valida_trajeto check(trajeto in (1,2,3)))';
 //const script = 'CREATE TABLE IF NOT EXISTS ausente (uuid char(36) not null, aluno_codigo char(36) not null, turno_ida int not null, turno_volta int not null, constraint ausente_pk primary key(uuid), constraint ausente_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint ausente_valida_turno_ida check(turno_ida in (0,1)), constraint ausente_valida_turno_volta check(turno_volta in (0,1)))';
 //const script = 'CREATE TABLE IF NOT EXISTS turno (uuid char(36) not null, aluno_codigo char(36) not null, motorista_codigo char(36) not null, turno varchar(20) not null, status_turno int not null, constraint turno_pk primary key(uuid), constraint turno_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint turno_fk_motorista_cod foreign key(motorista_codigo) references motorista, constraint turno_valida_status check(status_turno in (0,1,2,3)))';
 //const script = 'DELETE FROM usuario WHERE uuid = $1';
 //const script = 'ALTER TABLE ausente ADD data date not null';
+// const script = 'ALTER TABLE usuario ADD email varchar(50)';
 
-/*pool.query(script, function (error, result) {
-    if (error)
-        throw error;
-    else
-        console.log("Tabela criada com sucesso.");
-})*/
+// pool.query(script, function (error, result) {
+//     if (error)
+//         throw error;
+//     else
+//         console.log("Tabela criada com sucesso.");
+// })
 
 module.exports = {
 
@@ -127,10 +128,10 @@ module.exports = {
         return result1.rows[0].codigo_motorista;
     },
 
-    async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola ) {
+    async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola, email ) {
         try {
-            const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING usuario_login`;
-            const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo]);
+            const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING usuario_login`;
+            const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, email]);
             
             if(result1!=null)
             {
@@ -152,9 +153,9 @@ module.exports = {
         return result.rows;
     },
 
-    async updateAluno(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola) {
-        const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
-        const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
+    async updateAluno(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola, email) {
+        const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7, email = $8 where uuid = $1`;
+        const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, email]);
             
         if(result1!=null)
         {
