@@ -16,7 +16,9 @@ const pool = new Pool({
 //const script = 'CREATE TABLE IF NOT EXISTS turno (uuid char(36) not null, aluno_codigo char(36) not null, motorista_codigo char(36) not null, turno varchar(20) not null, status_turno int not null, constraint turno_pk primary key(uuid), constraint turno_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint turno_fk_motorista_cod foreign key(motorista_codigo) references motorista, constraint turno_valida_status check(status_turno in (0,1,2,3)))';
 //const script = 'DELETE FROM usuario WHERE uuid = $1';
 //const script = 'ALTER TABLE ausente ADD data date not null';
-// const script = 'ALTER TABLE usuario ADD email varchar(50)';
+//const script = 'ALTER TABLE usuario ADD email varchar(50)';
+// const script = 'DROP TABLE turno';
+// const script = 'CREATE TABLE IF NOT EXISTS turno (aluno_codigo char(36) not null, motorista_codigo char(36) not null, aluno_nome varchar(50) not null, aluno_endereco varchar(50) not null, turno int not null, status_turno int not null, data date not null, constraint turno_pk primary key(aluno_codigo,motorista_codigo), constraint turno_fk_aluno_cod foreign key(aluno_codigo) references aluno, constraint turno_fk_motorista_cod foreign key(motorista_codigo) references motorista, constraint turno_valida_turno check(turno in (1,2)), constraint turno_valida_status check(status_turno in (0,1,2,3)))';
 
 // pool.query(script, function (error, result) {
 //     if (error)
@@ -31,10 +33,10 @@ module.exports = {
         const sql = `SELECT usuario_tipo FROM usuario WHERE usuario_login = $1 and usuario_password = $2`;
         const result = await pool.query(sql, [login, senha]);
         //print(result);
-        if (result.rows[0]!= null){
+        if (result.rows[0] != null) {
             return result.rows[0].usuario_tipo;
         }
-        else{
+        else {
             return result.rows[0];
         }
     },
@@ -45,7 +47,7 @@ module.exports = {
             const result = await pool.query(sql, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo]);
             return result.rows;
 
-        }catch(error) {
+        } catch (error) {
             console.log(error);
             return -1;
         }
@@ -61,10 +63,10 @@ module.exports = {
         const sql = `SELECT uuid FROM usuario WHERE usuario_login = $1`;
         const result = await pool.query(sql, [login]);
         //print(result);
-        if (result.rows[0]!= null){
+        if (result.rows[0] != null) {
             return result.rows[0].uuid;
         }
-        else{
+        else {
             return result.rows[0];
         }
     },
@@ -73,16 +75,15 @@ module.exports = {
         try {
             const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING usuario_login`;
             const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo]);
-            
-            if(result1!=null)
-            {
+
+            if (result1 != null) {
                 const sql2 = `INSERT INTO motorista (usuario_codigo, cnh, placa_van, modelo_van, cor_van, marca_van) VALUES ($1, $2, $3, $4, $5, $6)`;
                 const result2 = await pool.query(sql2, [uuid, cnh, placa_van, modelo_van, cor_van, marca_van]);
                 return result1.rows[0].usuario_login
             }
             return result1.rows;
 
-        }catch(error) {
+        } catch (error) {
             console.log(error);
             return -1;
         }
@@ -103,9 +104,8 @@ module.exports = {
     async updateMotorista(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, cnh, placa_van, modelo_van, cor_van, marca_van) {
         const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7 where uuid = $1`;
         const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha]);
-            
-        if(result1!=null)
-        {
+
+        if (result1 != null) {
             const sql2 = `UPDATE motorista SET cnh=$2, placa_van=$3, modelo_van=$4, cor_van=$5, marca_van=$6 where usuario_codigo = $1`;
             const result2 = await pool.query(sql2, [uuid, cnh, placa_van, modelo_van, cor_van, marca_van]);
         }
@@ -121,27 +121,26 @@ module.exports = {
         result = await pool.query(sql, [uuid]);
         return result.rows;
     },
-    
+
     async linkMotorista(uuid_aluno, login_motorista) {
         const sql1 = `UPDATE aluno SET codigo_motorista = (SELECT u.uuid FROM usuario u WHERE u.usuario_login = $1 AND u.usuario_tipo = 'motorista') WHERE usuario_codigo = $2 RETURNING codigo_motorista`;
         const result1 = await pool.query(sql1, [login_motorista, uuid_aluno]);
         return result1.rows[0].codigo_motorista;
     },
 
-    async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola, email ) {
+    async createResponsaveis(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno, endereco, trajeto, escola, endereco_escola, email) {
         try {
             const sql1 = `INSERT INTO usuario (uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_password, usuario_tipo, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING usuario_login`;
             const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, email]);
-            
-            if(result1!=null)
-            {
+
+            if (result1 != null) {
                 const sql2 = `INSERT INTO aluno (usuario_codigo, nome_aluno , endereco , trajeto , escola , endereco_escola) VALUES ($1, $2, $3, $4, $5, $6)`;
-                const result2 = await pool.query(sql2, [uuid, nome_aluno , endereco , trajeto , escola , endereco_escola]);
+                const result2 = await pool.query(sql2, [uuid, nome_aluno, endereco, trajeto, escola, endereco_escola]);
                 return result1.rows[0].usuario_login
             }
             return result1.rows;
 
-        }catch(error) {
+        } catch (error) {
             console.log(error);
             return -1;
         }
@@ -153,12 +152,11 @@ module.exports = {
         return result.rows;
     },
 
-    async updateAluno(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola, email) {
+    async updateAluno(uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno, endereco, trajeto, escola, endereco_escola, email) {
         const sql1 = `UPDATE usuario SET nome_usuario=$2, cpf=$3, rg=$4, telefone=$5, usuario_login=$6, usuario_password=$7, email = $8 where uuid = $1`;
         const result1 = await pool.query(sql1, [uuid, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, email]);
-            
-        if(result1!=null)
-        {
+
+        if (result1 != null) {
             const sql2 = `UPDATE aluno SET nome_aluno=$2, endereco=$3, trajeto=$4, escola=$5, endereco_escola=$6 where usuario_codigo = $1`;
             const result2 = await pool.query(sql2, [uuid, nome_aluno, endereco, trajeto, escola, endereco_escola]);
         }
@@ -186,10 +184,10 @@ module.exports = {
         try {
             const sql1 = `INSERT INTO ausente (uuid, aluno_codigo, turno_ida, turno_volta, data) VALUES ($1, $2, $3, $4, $5) RETURNING aluno_codigo`;
             const result1 = await pool.query(sql1, [uuid, aluno_codigo, turno_ida, turno_volta, data]);
-            
+
             return result1.rows[0];
 
-        }catch(error) {
+        } catch (error) {
             console.log(error);
             return -1;
         }
@@ -207,4 +205,31 @@ module.exports = {
         return result.rows;
     },
 
+    async createTurno(login_motorista, turno) {
+        try {
+            uuid_motorista = await this.readMotorista(login_motorista);
+            // console.log(uuid_motorista);
+            uuid_motorista = uuid_motorista[0].uuid;
+
+            if (turno == 1) {
+                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select aluno_codigo from ausente where to_char(data, 'dd-mm-yyyy') = to_char(NOW(), 'dd-mm-yyyy') and turno_ida = 1) RETURNING motorista_codigo`;
+                result3 = await pool.query(sql3, [uuid_motorista]);
+            }
+            else {
+                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select aluno_codigo from ausente where to_char(data, 'dd-mm-yyyy') = to_char(NOW(), 'dd-mm-yyyy') and turno_volta = 1) RETURNING motorista_codigo`;
+                result3 = await pool.query(sql3, [uuid_motorista]);
+            }
+            return result3.rows[0].motorista_codigo;
+
+        } catch (error) {
+            console.log(error);
+            return -1;
+        }
+    },
+
+    async readTurno(uuid_motorista) {
+        const sql1 = `select * from turno where motorista_codigo = $1`;
+        const result1 = await pool.query(sql1, [uuid_motorista]);
+        return result1.rows
+    },
 }

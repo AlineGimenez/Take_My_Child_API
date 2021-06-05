@@ -232,4 +232,14 @@ server.put('/readausentelogin/:login', async function(request, response) {
     response.json(resultado);
 })
 
+server.post('/turno', async function(request, response) {
+    const login_motorista = request.body.login_motorista;
+    const turno = request.body.turno;
+
+    const result1 = await database.createTurno(login_motorista, turno);
+    //console.log(result1);
+    const result2 = await database.readTurno(result1);
+    response.json(result2);
+})
+
 server.listen(process.env.PORT || 3000);
