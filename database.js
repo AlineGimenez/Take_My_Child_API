@@ -224,7 +224,7 @@ module.exports = {
                 result3 = await pool.query(sql3, [uuid_motorista,data]);
             }
             else {
-                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select a.aluno_codigo from ausente a where data::date = $2::date and turno_volta = 1)`+' RETURNING motorista_codigo';
+                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 2, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select a.aluno_codigo from ausente a where data::date = $2::date and turno_volta = 1)`+' RETURNING motorista_codigo';
                 result3 = await pool.query(sql3, [uuid_motorista,data]);
             }
             return result3.rows[0].motorista_codigo;
