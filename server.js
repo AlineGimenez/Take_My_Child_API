@@ -250,7 +250,7 @@ server.get('/readturno/:uuid', async function(request, response) {
         response.json(result1);
     }
     else
-        response.status(401).send();
+        response.status(400).send();
 })
 
 server.put('/statusturno', async function(request, response) {
