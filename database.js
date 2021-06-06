@@ -253,6 +253,12 @@ module.exports = {
         return result1.rows[0].aluno_codigo;
     },
 
+    async readEmail(uuid_aluno) {
+        const sql1 = `select email from usuario where uuid = $1`;
+        const result1 = await pool.query(sql1, [uuid_aluno]);
+        return result1.rows
+    },
+
     async deleteTurnoMotorista(uuid_motorista) {
         sql = `delete from turno where motorista_codigo = $1`;
         result = await pool.query(sql, [uuid_motorista]);
