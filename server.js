@@ -259,7 +259,10 @@ server.put('/statusturno', async function(request, response) {
     const status = request.body.status;
 
     const result1 = await database.updateStatus(motorista_codigo, aluno_codigo, status);
-    response.json(result1);
+    console.log(result1);
+    const result2 = await database.readEmail(result1);
+    console.log(result2);
+    response.send(result2);
 })
 
 server.delete('/deleteturnomotorista/:uuid', async function(request, response) {

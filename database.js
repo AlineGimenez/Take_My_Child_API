@@ -256,7 +256,7 @@ module.exports = {
     async readEmail(uuid_aluno) {
         const sql1 = `select email from usuario where uuid = $1`;
         const result1 = await pool.query(sql1, [uuid_aluno]);
-        return result1.rows
+        return result1.rows[0].email;
     },
 
     async deleteTurnoMotorista(uuid_motorista) {
