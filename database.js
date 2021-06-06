@@ -211,13 +211,21 @@ module.exports = {
             // console.log(uuid_motorista);
             uuid_motorista = uuid_motorista[0].uuid;
 
+            console.log(turno);
+
             if (turno == 1) {
-                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select aluno_codigo from ausente where to_char(data, 'dd-mm-yyyy') = to_char(NOW(), 'dd-mm-yyyy') and turno_ida = 1) RETURNING motorista_codigo`;
-                result3 = await pool.query(sql3, [uuid_motorista]);
+                process.env.TZ = 'America/Sao_Paulo';
+                var data = new Date();
+                data.toLocaleTimeString();
+                console.log(data);
+
+                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select a.aluno_codigo from ausente a where data::date = $2::date and turno_ida = 1)`+' RETURNING motorista_codigo';
+                //sql3 = `select a.aluno_codigo from ausente a where data::date = $1::date and turno_ida = 1`;
+                result3 = await pool.query(sql3, [uuid_motorista,data]);
             }
             else {
-                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select aluno_codigo from ausente where to_char(data, 'dd-mm-yyyy') = to_char(NOW(), 'dd-mm-yyyy') and turno_volta = 1) RETURNING motorista_codigo`;
-                result3 = await pool.query(sql3, [uuid_motorista]);
+                sql3 = `insert into turno(aluno_codigo, motorista_codigo, aluno_nome, aluno_endereco, turno, status_turno, data) select usuario_codigo, codigo_motorista, nome_aluno, endereco, 1, 0, NOW() from aluno where codigo_motorista = $1 and usuario_codigo not in (select a.aluno_codigo from ausente a where data::date = $2::date and turno_volta = 1)`+' RETURNING motorista_codigo';
+                result3 = await pool.query(sql3, [uuid_motorista,data]);
             }
             return result3.rows[0].motorista_codigo;
 
@@ -231,5 +239,23 @@ module.exports = {
         const sql1 = `select * from turno where motorista_codigo = $1`;
         const result1 = await pool.query(sql1, [uuid_motorista]);
         return result1.rows
+    },
+
+    async readTurnoFinalizado(uuid_motorista) {
+        const sql1 = `select * from turno where motorista_codigo = $1 and status_turno = 1 or status_turno = 0`;
+        const result1 = await pool.query(sql1, [uuid_motorista]);
+        return result1.rows
+    },
+
+    async updateStatus(motorista_codigo, aluno_codigo, status) {
+        const sql1 = `UPDATE turno SET status_turno = $1 where aluno_codigo = $2 and motorista_codigo = $3 RETURNING aluno_codigo`;
+        const result1 = await pool.query(sql1, [status, aluno_codigo, motorista_codigo]);
+        return result1.rows[0].aluno_codigo;
+    },
+
+    async deleteTurnoMotorista(uuid_motorista) {
+        sql = `delete from turno where motorista_codigo = $1`;
+        result = await pool.query(sql, [uuid_motorista]);
+        return result.rows;
     },
 }

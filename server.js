@@ -237,9 +237,32 @@ server.post('/turno', async function(request, response) {
     const turno = request.body.turno;
 
     const result1 = await database.createTurno(login_motorista, turno);
-    //console.log(result1);
-    const result2 = await database.readTurno(result1);
+    console.log(result1);
+   const result2 = await database.readTurno(result1);
     response.json(result2);
 })
+
+server.get('/readturno/:uuid', async function(request, response) {
+    const uuid_motorista = request.params.uuid;
+    console.log(uuid_motorista);
+    const resultado = await database.readTurnoFinalizado(uuid_motorista);
+    response.json(resultado);
+})
+
+server.put('/statusturno', async function(request, response) {
+    const motorista_codigo = request.body.motorista_codigo;
+    const aluno_codigo = request.body.aluno_codigo;
+    const status = request.body.status;
+
+    const result1 = await database.updateStatus(motorista_codigo, aluno_codigo, status);
+    response.json(result1);
+})
+
+server.delete('/deleteturnomotorista/:uuid', async function(request, response) {
+    const uuid_motorista= request.params.uuid;
+    const resultado = await database.deleteTurnoMotorista(uuid_motorista);
+    response.status(200).send();
+})
+
 
 server.listen(process.env.PORT || 3000);
