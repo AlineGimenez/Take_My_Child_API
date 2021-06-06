@@ -246,7 +246,7 @@ server.get('/readturno/:uuid', async function(request, response) {
     const uuid_motorista = request.params.uuid;
     console.log(uuid_motorista);
     const resultado = await database.readTurnoFinalizado(uuid_motorista);
-    response.json(resultado);
+    response.send(resultado);
 })
 
 server.put('/statusturno', async function(request, response) {
