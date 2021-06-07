@@ -1,33 +1,42 @@
-const  express  =  require ('express') ;  // import express; usando express;
+const express = require('express');  // import express; usando express;
 const server = express();
-const cors = require ('cors');
+const cors = require('cors');
 const { uuid } = require('uuidv4');
 
 const database = require('./database');
+var nodemailer = require('nodemailer');
 
 server.use(cors())
 server.use(express.json())
 
-server.post('/login', async function(request, response) {
+var mail = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'takemychildpdm@gmail.com',
+        pass: 'takemychild24'
+    }
+});
+
+server.post('/login', async function (request, response) {
     const login = request.body.login;
     const password = request.body.password;
     const resposta = await database.login(login, password);
-    if(resposta != null){
+    if (resposta != null) {
         response.send(resposta);
         response.status(200).send();
     }
-    else{
+    else {
         response.send("SENHA ERRADA");
         response.status(400).send();
     }
 })
 
-server.get('/', async function(request, response) {
+server.get('/', async function (request, response) {
     const resultado = await database.read();
     response.json(resultado);
 })
 
-server.post('/cadastrousuario', async function(request, response) {
+server.post('/cadastrousuario', async function (request, response) {
     const uuid1 = uuid();
     const nome_usuario = request.body.nome;
     const cpf = request.body.cpf;
@@ -41,19 +50,19 @@ server.post('/cadastrousuario', async function(request, response) {
     response.status(200).send();
 })
 
-server.get('/verificarlogin/:login', async function(request, response) {
+server.get('/verificarlogin/:login', async function (request, response) {
     const login = request.params.login;
 
     const resposta = await database.verificarLogin(login);
-    if(resposta != null){
+    if (resposta != null) {
         response.send("Já existe este login!");
     }
-    else{
+    else {
         response.status(401).send();
     }
 })
 
-server.post('/cadastrarmotorista', async function(request, response) {
+server.post('/cadastrarmotorista', async function (request, response) {
     const uuid1 = uuid();
     const nome_usuario = request.body.user.nome;
     const cpf = request.body.user.cpf;
@@ -74,19 +83,19 @@ server.post('/cadastrarmotorista', async function(request, response) {
     response.status(200).send();
 })
 
-server.get('/readmotorista/:login', async function(request, response) {
+server.get('/readmotorista/:login', async function (request, response) {
     const login1 = request.params.login;
     const resultado = await database.readMotorista(login1);
     response.json(resultado);
 })
 
-server.get('/readmotoristauuid/:uuid', async function(request, response) {
+server.get('/readmotoristauuid/:uuid', async function (request, response) {
     const uuid1 = request.params.uuid;
     const resultado = await database.readMotoristaUUID(uuid1);
     response.json(resultado);
 })
 
-server.put('/updatemotorista/:uuid', async function(request, response) {
+server.put('/updatemotorista/:uuid', async function (request, response) {
     const uuid1 = request.params.uuid;
     const nome_usuario = request.body.user.nome;
     const cpf = request.body.user.cpf;
@@ -106,7 +115,7 @@ server.put('/updatemotorista/:uuid', async function(request, response) {
     response.json(resultado);
 })
 
-server.put('/updatecodmotorista', async function(request, response) {
+server.put('/updatecodmotorista', async function (request, response) {
     const uuid_aluno = request.body.uuid_aluno;
     const login_motorista = request.body.login_motorista;
 
@@ -114,39 +123,39 @@ server.put('/updatecodmotorista', async function(request, response) {
 
     result1 = null;
 
-    if(login_motorista != ""){
+    if (login_motorista != "") {
         const resultado = await database.readMotorista(login_motorista);
 
         console.log(resultado);
 
-        if(resultado != ""){
+        if (resultado != "") {
             console.log("PASSOU if");
-            result1 = await database.linkMotorista(uuid_aluno,login_motorista);
+            result1 = await database.linkMotorista(uuid_aluno, login_motorista);
         }
-        else{
+        else {
             result1 = null;
         }
-       
+
     }
-    else{
+    else {
         console.log("PASSOU else");
-        result1 = await database.linkMotorista(uuid_aluno,login_motorista);
+        result1 = await database.linkMotorista(uuid_aluno, login_motorista);
     }
-    
-    if(result1 != null){
+
+    if (result1 != null) {
         response.json(result1);
     }
     else
         response.status(401).send();
 })
 
-server.delete('/deletemotorista/:uuid', async function(request, response) {
-    const uuid1= request.params.uuid;
+server.delete('/deletemotorista/:uuid', async function (request, response) {
+    const uuid1 = request.params.uuid;
     const resultado = await database.deleteMotorista(uuid1);
     response.status(200).send();
 })
 
-server.post('/cadastrarresponsaveis', async function(request, response) {
+server.post('/cadastrarresponsaveis', async function (request, response) {
     const uuid1 = uuid();
     const nome_usuario = request.body.user.nome;
     const cpf = request.body.user.cpf;
@@ -156,25 +165,25 @@ server.post('/cadastrarresponsaveis', async function(request, response) {
     const usuario_senha = request.body.user.senha;
     const email = request.body.user.email;
     const usuario_tipo = "responsave";
-    
+
     const nome_aluno = request.body.nome_aluno;
     const endereco = request.body.endereco;
     const trajeto = request.body.trajeto;
     const escola = request.body.escola;
     const endereco_escola = request.body.endereco_escola;
 
-    const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno , endereco , trajeto , escola , endereco_escola, email);
+    const result = await database.createResponsaveis(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, usuario_tipo, nome_aluno, endereco, trajeto, escola, endereco_escola, email);
     response.send(result);
     response.status(200).send();
 })
 
-server.get('/readaluno/:login', async function(request, response) {
+server.get('/readaluno/:login', async function (request, response) {
     const login1 = request.params.login;
     const resultado = await database.readAluno(login1);
     response.json(resultado);
 })
 
-server.put('/updatealuno/:uuid', async function(request, response) {
+server.put('/updatealuno/:uuid', async function (request, response) {
     const uuid1 = request.params.uuid;
     const nome_usuario = request.body.user.nome;
     const cpf = request.body.user.cpf;
@@ -183,31 +192,31 @@ server.put('/updatealuno/:uuid', async function(request, response) {
     const email = request.body.user.email;
     const usuario_login = request.body.user.login;
     const usuario_senha = request.body.user.senha;
-    
+
     const nome_aluno = request.body.nome_aluno;
     const endereco = request.body.endereco;
     const trajeto = request.body.trajeto;
     const escola = request.body.escola;
     const endereco_escola = request.body.endereco_escola;
 
-    const result = await database.updateAluno(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno , endereco , trajeto , escola , endereco_escola, email);
+    const result = await database.updateAluno(uuid1, nome_usuario, cpf, rg, telefone, usuario_login, usuario_senha, nome_aluno, endereco, trajeto, escola, endereco_escola, email);
     const resultado = await database.readAluno(usuario_login);
     response.json(resultado);
 })
 
-server.delete('/deletealuno/:uuid', async function(request, response) {
-    const uuid1= request.params.uuid;
+server.delete('/deletealuno/:uuid', async function (request, response) {
+    const uuid1 = request.params.uuid;
     const resultado = await database.deleteAluno(uuid1);
     response.status(200).send();
 })
 
-server.get('/listagemalunos/:login', async function(request, response) {
+server.get('/listagemalunos/:login', async function (request, response) {
     const login1 = request.params.login;
     const resultado = await database.listAlunos(login1);
     response.json(resultado);
 })
 
-server.post('/createausente', async function(request, response) {
+server.post('/createausente', async function (request, response) {
     const uuid1 = uuid();
     const aluno_codigo = request.body.aluno_codigo;
     const turno_ida = request.body.turno_ida;
@@ -219,41 +228,41 @@ server.post('/createausente', async function(request, response) {
     response.status(200).send();
 })
 
-server.get('/readausente/', async function(request, response) {
+server.get('/readausente/', async function (request, response) {
     const resultado = await database.readAusente();
     response.json(resultado);
 })
 
-server.put('/readausentelogin/:login', async function(request, response) {
+server.put('/readausentelogin/:login', async function (request, response) {
     const login = request.params.login;
     const data = request.body.data;
     console.log(data);
-    const resultado = await database.readAusenteLogin(login,data);
+    const resultado = await database.readAusenteLogin(login, data);
     response.json(resultado);
 })
 
-server.post('/turno', async function(request, response) {
+server.post('/turno', async function (request, response) {
     const login_motorista = request.body.login_motorista;
     const turno = request.body.turno;
 
     const result1 = await database.createTurno(login_motorista, turno);
     console.log(result1);
-   const result2 = await database.readTurno(result1);
+    const result2 = await database.readTurno(result1);
     response.json(result2);
 })
 
-server.get('/readturno/:uuid', async function(request, response) {
+server.get('/readturno/:uuid', async function (request, response) {
     const uuid_motorista = request.params.uuid;
     console.log(uuid_motorista);
     const resultado = await database.readTurnoFinalizado(uuid_motorista);
-    if(resultado != ""){
+    if (resultado != "") {
         response.json(resultado);
     }
     else
         response.status(401).send();
 })
 
-server.put('/statusturno', async function(request, response) {
+server.put('/statusturno', async function (request, response) {
     const motorista_codigo = request.body.motorista_codigo;
     const aluno_codigo = request.body.aluno_codigo;
     const status = request.body.status;
@@ -265,9 +274,27 @@ server.put('/statusturno', async function(request, response) {
     response.send(result2);
 })
 
-server.delete('/deleteturnomotorista/:uuid', async function(request, response) {
-    const uuid_motorista= request.params.uuid;
+server.delete('/deleteturnomotorista/:uuid', async function (request, response) {
+    const uuid_motorista = request.params.uuid;
     const resultado = await database.deleteTurnoMotorista(uuid_motorista);
+    response.status(200).send();
+})
+
+server.get('/email', async function (request, response) {
+    var mailOptions = {
+        from: 'takemychildpdm@gmail.com',
+        to: 'alinegimenezdecastro@hotmail.com',
+        subject: 'Sending Email via Node.js',
+        text: 'That was easy!'
+    };
+
+    mail.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
     response.status(200).send();
 })
 
