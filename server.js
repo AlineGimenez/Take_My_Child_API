@@ -280,19 +280,29 @@ server.delete('/deleteturnomotorista/:uuid', async function (request, response) 
     response.status(200).send();
 })
 
-server.get('/email', async function (request, response) {
+server.post('/email', async function (request, response) {
+    const destinatario = request.body.destinatario;
+    const texto = request.body.texto;
+
     var mailOptions = {
         from: 'takemychildpdm@gmail.com',
-        to: 'alinegimenezdecastro@hotmail.com',
-        subject: 'Sending Email via Node.js',
-        text: 'That was easy!'
+        to: destinatario,
+        subject: 'Take My Child - Notificação',
+        html: texto
     };
+
+    // var mailOptions = {
+    //     from: 'takemychildpdm@gmail.com',
+    //     to: 'alinegimenezdecastro@hotmail.com',
+    //     subject: 'Sending Email via Node.js',
+    //     text: 'That was easy!'
+    // };
 
     mail.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
         } else {
-            console.log('Email sent: ' + info.response);
+            console.log('Email enviado: ' + info.response);
         }
     });
     response.status(200).send();
