@@ -247,6 +247,12 @@ module.exports = {
         return result1.rows
     },
 
+    async readTurnoAluno(login_aluno) {
+        const sql1 = `select * from turno where aluno_codigo = (select uuid from usuario where usuario_login = $1)`;
+        const result1 = await pool.query(sql1, [login_aluno]);
+        return result1.rows
+    },
+
     async updateStatus(motorista_codigo, aluno_codigo, status) {
         const sql1 = `UPDATE turno SET status_turno = $1 where aluno_codigo = $2 and motorista_codigo = $3 RETURNING aluno_codigo`;
         const result1 = await pool.query(sql1, [status, aluno_codigo, motorista_codigo]);

@@ -262,6 +262,16 @@ server.get('/readturno/:uuid', async function (request, response) {
         response.status(401).send();
 })
 
+server.get('/readturnoAluno/:login', async function (request, response) {
+    const login_aluno = request.params.login;
+    const resultado = await database.readTurnoAluno(login_aluno);
+    if (resultado != "") {
+        response.json(resultado);
+    }
+    else
+        response.status(401).send();
+})
+
 server.put('/statusturno', async function (request, response) {
     const motorista_codigo = request.body.motorista_codigo;
     const aluno_codigo = request.body.aluno_codigo;
