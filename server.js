@@ -282,12 +282,13 @@ server.delete('/deleteturnomotorista/:uuid', async function (request, response) 
 
 server.post('/email', async function (request, response) {
     const destinatario = request.body.destinatario;
+    const assunto = request.body.assunto;
     const texto = request.body.texto;
 
     var mailOptions = {
         from: 'takemychildpdm@gmail.com',
         to: destinatario,
-        subject: 'Take My Child - Notificação',
+        subject: assunto,
         html: texto
     };
 
