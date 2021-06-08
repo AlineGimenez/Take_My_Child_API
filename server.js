@@ -262,7 +262,7 @@ server.get('/readturno/:uuid', async function (request, response) {
         response.status(401).send();
 })
 
-server.get('/readturnoAluno/:login', async function (request, response) {
+server.get('/readturnoaluno/:login', async function (request, response) {
     const login_aluno = request.params.login;
     const resultado = await database.readTurnoAluno(login_aluno);
     if (resultado != "") {
