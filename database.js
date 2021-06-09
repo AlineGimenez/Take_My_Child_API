@@ -237,7 +237,8 @@ module.exports = {
     },
 
     async readTurno(uuid_motorista) {
-        const sql1 = `select * from turno where motorista_codigo = $1`;
+        const sql1 = `select t.*, a.escola from turno t INNER JOIN aluno a on a.usuario_codigo = t.aluno_codigo where t.motorista_codigo = $1`;
+        // const sql1 = `select * from turno where motorista_codigo = $1`;
         const result1 = await pool.query(sql1, [uuid_motorista]);
         return result1.rows
     },
