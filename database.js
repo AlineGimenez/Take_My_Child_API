@@ -164,6 +164,10 @@ module.exports = {
     },
 
     async deleteAluno(uuid) {
+        sql = `delete from ausente where aluno_codigo = $1`;
+        result = await pool.query(sql, [uuid]);
+        sql = `delete from turno where aluno_codigo = $1`;
+        result = await pool.query(sql, [uuid]);
         sql = `delete from aluno where usuario_codigo = $1`;
         result = await pool.query(sql, [uuid]);
         sql = `delete from usuario where uuid = $1`;
